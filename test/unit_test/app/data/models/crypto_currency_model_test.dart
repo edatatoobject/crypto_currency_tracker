@@ -4,7 +4,8 @@ import 'package:crypto_currency_tracker/src/app/data/models/crypto_currency_mode
 import 'package:crypto_currency_tracker/src/app/domain/entities/crypto_currency.dart';
 import 'package:flutter_test/flutter_test.dart';
 
-import '../../fixtures/fixture_reader.dart';
+import '../../../../fixtures/fixture_reader.dart';
+
 
 void main() {
   const CryptoCurrencyModel cryptoCurrencyModel = CryptoCurrencyModel(
