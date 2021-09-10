@@ -16,4 +16,22 @@ class CryptoCurrencyRepositoryImpl implements CryptoCurrencyRepository{
     throw UnimplementedError();
   }
 
+  @override
+  Future addFavoriteCryptoCurrency(String id) {
+      // TODO: implement addFavoriteCryptoCurrency
+      throw UnimplementedError();
+    }
+  
+    @override
+    Future<Either<Failure, List<CryptoCurrency>>> getFavoriteCryptoCurrencies() {
+      // TODO: implement getFavoriteCryptoCurrencies
+      throw UnimplementedError();
+    }
+  
+    @override
+    Future removeFavoriteCryptoCurrency(String id) {
+    // TODO: implement removeFavoriteCryptoCurrency
+    throw UnimplementedError();
+  }
+
 }
