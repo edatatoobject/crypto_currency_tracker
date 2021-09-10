@@ -5,7 +5,7 @@ import 'package:crypto_currency_tracker/src/app/data/repositories/crypto_currenc
 import 'package:crypto_currency_tracker/src/app/domain/entities/crypto_currency.dart';
 import 'package:crypto_currency_tracker/src/core/error/exception.dart';
 import 'package:crypto_currency_tracker/src/core/error/failure.dart';
-import 'package:crypto_currency_tracker/src/core/platform/network_info.dart';
+import 'package:crypto_currency_tracker/src/core/network/network_info.dart';
 import 'package:dartz/dartz.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mocktail/mocktail.dart';

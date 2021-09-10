@@ -3,7 +3,7 @@ import 'package:crypto_currency_tracker/src/app/data/datasources/crypto_currency
 import 'package:crypto_currency_tracker/src/app/domain/entities/crypto_currency.dart';
 import 'package:crypto_currency_tracker/src/app/domain/repositories/cyrpto_currency_repository.dart';
 import 'package:crypto_currency_tracker/src/core/error/exception.dart';
-import 'package:crypto_currency_tracker/src/core/platform/network_info.dart';
+import 'package:crypto_currency_tracker/src/core/network/network_info.dart';
 import 'package:dartz/dartz.dart';
 import 'package:crypto_currency_tracker/src/core/error/failure.dart';
 
