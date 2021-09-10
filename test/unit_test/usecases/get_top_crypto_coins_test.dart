@@ -1,35 +1,35 @@
-import 'package:crypto_currency_tracker/src/app/domain/entities/crypto_coin.dart';
-import 'package:crypto_currency_tracker/src/app/domain/repositories/cyrpto_coin_repository.dart';
-import 'package:crypto_currency_tracker/src/app/domain/usecases/get_top_crypto_coins.dart';
+import 'package:crypto_currency_tracker/src/app/domain/entities/crypto_currency.dart';
+import 'package:crypto_currency_tracker/src/app/domain/repositories/cyrpto_currency_repository.dart';
+import 'package:crypto_currency_tracker/src/app/domain/usecases/get_top_crypto_currencies.dart';
 import 'package:crypto_currency_tracker/src/core/usecases/usecase.dart';
 import 'package:dartz/dartz.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mocktail/mocktail.dart';
 
-class MockCryptoCoinRepository extends Mock implements CryptoCoinRepository {}
+class MockCryptoCurrencyRepository extends Mock implements CryptoCurrencyRepository {}
 
 void main() {
-  late GetTopCryptoCoins usecase;
-  late MockCryptoCoinRepository mockCryptoCoinRepository;
+  late GetTopCryptoCurrencies usecase;
+  late MockCryptoCurrencyRepository mockCryptoCurrencyRepository;
 
   setUp(() {
-    mockCryptoCoinRepository = MockCryptoCoinRepository();
-    usecase = GetTopCryptoCoins(mockCryptoCoinRepository);
+    mockCryptoCurrencyRepository = MockCryptoCurrencyRepository();
+    usecase = GetTopCryptoCurrencies(mockCryptoCurrencyRepository);
   });
 
-  const topCryptoCoins = [
-    CryptoCoin("bitcoin", "Bitcoin", "BTC", "imageUrl", 45000, 1, 1500, 1.5),
-    CryptoCoin("ethereum", "Ethereum", "ETH", "imageUrl", 3000, 2, 100, 1)
+  const topCryptoCurrencies = [
+    CryptoCurrency("bitcoin", "Bitcoin", "BTC", "imageUrl", 45000, 1, 1500, 1.5),
+    CryptoCurrency("ethereum", "Ethereum", "ETH", "imageUrl", 3000, 2, 100, 1)
   ];
 
   test("get top ranked crypto coins", () async {
-    when(() => mockCryptoCoinRepository.getTopCryptoCoins())
-        .thenAnswer((_) async => const Right(topCryptoCoins));
+    when(() => mockCryptoCurrencyRepository.getTopCryptoCurrencies())
+        .thenAnswer((_) async => const Right(topCryptoCurrencies));
 
     final result = await usecase(NoParams());
 
-    expect(result, const Right(topCryptoCoins));
-    verify(() => mockCryptoCoinRepository.getTopCryptoCoins());
-    verifyNoMoreInteractions(mockCryptoCoinRepository);
+    expect(result, const Right(topCryptoCurrencies));
+    verify(() => mockCryptoCurrencyRepository.getTopCryptoCurrencies());
+    verifyNoMoreInteractions(mockCryptoCurrencyRepository);
   });
 }

@@ -1,6 +1,6 @@
 import 'package:equatable/equatable.dart';
 
-class CryptoCoin extends Equatable {
+class CryptoCurrency extends Equatable {
   final String id;
   final String name;
   final String symbol;
@@ -10,7 +10,7 @@ class CryptoCoin extends Equatable {
   final double priceChange;
   final double pricaChangePersentage;
 
-  const CryptoCoin(this.id, this.name, this.symbol, this.imageUrl, this.price, this.ranc,
+  const CryptoCurrency(this.id, this.name, this.symbol, this.imageUrl, this.price, this.ranc,
       this.priceChange, this.pricaChangePersentage);
 
   @override
