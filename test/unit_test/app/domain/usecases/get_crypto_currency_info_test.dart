@@ -1,6 +1,7 @@
 import 'package:crypto_currency_tracker/src/app/domain/entities/crypto_currency.dart';
 import 'package:crypto_currency_tracker/src/app/domain/repositories/cyrpto_currency_repository.dart';
 import 'package:crypto_currency_tracker/src/app/domain/usecases/get_crypto_currency_info.dart';
+import 'package:crypto_currency_tracker/src/app/domain/usecases/params/id_params.dart';
 import 'package:dartz/dartz.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mocktail/mocktail.dart';
@@ -25,7 +26,7 @@ void main() {
     when(() => mockCryptoCurrencyRepository.getCryptoCurrencyInfo(id))
         .thenAnswer((_) async => const Right(cryptoCurrency));
 
-    final result = await usecase(const Params(id: id));
+    final result = await usecase(const IdParams(id: id));
 
     expect(result, const Right(cryptoCurrency));
 

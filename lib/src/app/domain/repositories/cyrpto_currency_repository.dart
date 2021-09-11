@@ -6,6 +6,6 @@ abstract class CryptoCurrencyRepository {
   Future<Either<Failure, CryptoCurrency>> getCryptoCurrencyInfo(String id);
   Future<Either<Failure, List<CryptoCurrency>>> getTopCryptoCurrencies();
   Future<Either<Failure, List<CryptoCurrency>>> getFavoriteCryptoCurrencies();
-  Future addFavoriteCryptoCurrency(String id);
-  Future removeFavoriteCryptoCurrency(String id);
+  Future<void> addFavoriteCryptoCurrency(String id);
+  Future<void> removeFavoriteCryptoCurrency(String id);
 }
