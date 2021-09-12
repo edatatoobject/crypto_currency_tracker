@@ -11,7 +11,6 @@ class AddFavoriteCryptoCurrency extends UseCaseWithNoReturn<IdParams> {
 
   @override
   Future<Either<Failure, NoReturn>> call(IdParams params) async {
-    await repository.addFavoriteCryptoCurrency(params.id);
-    return Right(NoReturn());
+    return await repository.addFavoriteCryptoCurrency(params.id);
   }
 }

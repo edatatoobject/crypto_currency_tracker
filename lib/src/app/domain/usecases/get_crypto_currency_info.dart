@@ -4,7 +4,6 @@ import 'package:crypto_currency_tracker/src/app/domain/usecases/params/id_params
 import 'package:crypto_currency_tracker/src/core/error/failure.dart';
 import 'package:crypto_currency_tracker/src/core/usecases/usecase.dart';
 import 'package:dartz/dartz.dart';
-import 'package:equatable/equatable.dart';
 
 class GetCryptoCurrencyInfo extends UseCase<CryptoCurrency, IdParams> {
   final CryptoCurrencyRepository repository;

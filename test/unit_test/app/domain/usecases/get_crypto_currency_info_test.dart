@@ -31,7 +31,6 @@ void main() {
     expect(result, const Right(cryptoCurrency));
 
     verify(() => mockCryptoCurrencyRepository.getCryptoCurrencyInfo(id));
-
     verifyNoMoreInteractions(mockCryptoCurrencyRepository);
   });
 }

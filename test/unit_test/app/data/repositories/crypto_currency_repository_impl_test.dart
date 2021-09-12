@@ -38,7 +38,6 @@ void main() {
   const String id = "bitcoin";
   const CryptoCurrencyModel cryptoCurrencyModel = CryptoCurrencyModel(
       "bitcoin", "Bitcoin", "BTC", "imageUrl", 45000, 1, 1500, 1);
-  const CryptoCurrency cryptoCurrency = cryptoCurrencyModel;
 
   const topCryptoCurrencyModels = [
     CryptoCurrencyModel(

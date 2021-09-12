@@ -22,7 +22,7 @@ void main() {
 
   test("should add crypto currency to favorites", () async {
     when(() => mockCryptoCurrencyRepository.addFavoriteCryptoCurrency(id))
-        .thenAnswer((_) async {});
+        .thenAnswer((_) async => Right(NoReturn()));
 
     var result = await usecase(const IdParams(id: id));
 

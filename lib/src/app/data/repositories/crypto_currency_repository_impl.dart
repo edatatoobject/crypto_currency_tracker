@@ -4,6 +4,7 @@ import 'package:crypto_currency_tracker/src/app/domain/entities/crypto_currency.
 import 'package:crypto_currency_tracker/src/app/domain/repositories/cyrpto_currency_repository.dart';
 import 'package:crypto_currency_tracker/src/core/error/exception.dart';
 import 'package:crypto_currency_tracker/src/core/network/network_info.dart';
+import 'package:crypto_currency_tracker/src/core/usecases/usecase.dart';
 import 'package:dartz/dartz.dart';
 import 'package:crypto_currency_tracker/src/core/error/failure.dart';
 
@@ -37,19 +38,19 @@ class CryptoCurrencyRepositoryImpl implements CryptoCurrencyRepository {
   }
 
   @override
-  Future addFavoriteCryptoCurrency(String id) {
-    // TODO: implement addFavoriteCryptoCurrency
-    throw UnimplementedError();
-  }
-
-  @override
   Future<Either<Failure, List<CryptoCurrency>>> getFavoriteCryptoCurrencies() {
     // TODO: implement getFavoriteCryptoCurrencies
     throw UnimplementedError();
   }
 
+    @override
+  Future<Either<Failure, NoReturn>> addFavoriteCryptoCurrency(String id) {
+    // TODO: implement addFavoriteCryptoCurrency
+    throw UnimplementedError();
+  }
+
   @override
-  Future removeFavoriteCryptoCurrency(String id) {
+  Future<Either<Failure, NoReturn>> removeFavoriteCryptoCurrency(String id) {
     // TODO: implement removeFavoriteCryptoCurrency
     throw UnimplementedError();
   }
