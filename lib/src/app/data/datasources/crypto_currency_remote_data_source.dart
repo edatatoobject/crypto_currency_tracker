@@ -1,10 +1,9 @@
 import 'package:crypto_currency_tracker/src/app/data/models/crypto_currency_model.dart';
 
 abstract class CryptoCurrencyRemoteDataSource {
-
-
-
   Future<CryptoCurrencyModel> getCryptoCurrencyInfo(String id);
+
+  Future<List<CryptoCurrencyModel>> getCryptoCurrencyArray(List<String> ids);
 
   /// Calls the https://api.coingecko.com/api/v3/coins/markets?vs_currency=usd endpoint.
   ///

@@ -38,20 +38,40 @@ class CryptoCurrencyRepositoryImpl implements CryptoCurrencyRepository {
   }
 
   @override
-  Future<Either<Failure, List<CryptoCurrency>>> getFavoriteCryptoCurrencies() {
-    // TODO: implement getFavoriteCryptoCurrencies
-    throw UnimplementedError();
-  }
+  Future<Either<Failure, List<CryptoCurrency>>>
+      getFavoriteCryptoCurrencies() async {
+    List<String> favoriteIds = [];
+    try {
+      favoriteIds = await localDataSource.getFavoriteCryptoCurrency();
+    } on StorageException {
+      return Left(StorageFailure());
+    }
 
-    @override
-  Future<Either<Failure, NoReturn>> addFavoriteCryptoCurrency(String id) {
-    // TODO: implement addFavoriteCryptoCurrency
-    throw UnimplementedError();
+    try {
+      return Right(await remoteDataSource.getCryptoCurrencyArray(favoriteIds));
+    } on ServerException {
+      return Left(ServerFailure());
+    }
   }
 
   @override
-  Future<Either<Failure, NoReturn>> removeFavoriteCryptoCurrency(String id) {
-    // TODO: implement removeFavoriteCryptoCurrency
-    throw UnimplementedError();
+  Future<Either<Failure, NoReturn>> addFavoriteCryptoCurrency(String id) async {
+    try {
+      await localDataSource.addFavoriteCurrency(id);
+      return Right(NoReturn());
+    } on StorageException {
+      return Left(StorageFailure());
+    }
+  }
+
+  @override
+  Future<Either<Failure, NoReturn>> removeFavoriteCryptoCurrency(
+      String id) async {
+    try {
+      await localDataSource.removeFavoriteCurrency(id);
+      return Right(NoReturn());
+    } on StorageException {
+      return Left(StorageFailure());
+    }
   }
 }

@@ -2,10 +2,10 @@ import 'package:crypto_currency_tracker/src/app/data/datasources/crypto_currency
 import 'package:crypto_currency_tracker/src/app/data/datasources/crypto_currency_remote_data_source.dart';
 import 'package:crypto_currency_tracker/src/app/data/models/crypto_currency_model.dart';
 import 'package:crypto_currency_tracker/src/app/data/repositories/crypto_currency_repository_impl.dart';
-import 'package:crypto_currency_tracker/src/app/domain/entities/crypto_currency.dart';
 import 'package:crypto_currency_tracker/src/core/error/exception.dart';
 import 'package:crypto_currency_tracker/src/core/error/failure.dart';
 import 'package:crypto_currency_tracker/src/core/network/network_info.dart';
+import 'package:crypto_currency_tracker/src/core/usecases/usecase.dart';
 import 'package:dartz/dartz.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mocktail/mocktail.dart';
@@ -36,10 +36,13 @@ void main() {
   });
 
   const String id = "bitcoin";
+
   const CryptoCurrencyModel cryptoCurrencyModel = CryptoCurrencyModel(
       "bitcoin", "Bitcoin", "BTC", "imageUrl", 45000, 1, 1500, 1);
 
-  const topCryptoCurrencyModels = [
+  const List<String> ids = ["bitcoin", "ethereum"];
+
+  const List<CryptoCurrencyModel> cryptoCurrencyModels = [
     CryptoCurrencyModel(
         "bitcoin", "Bitcoin", "BTC", "imageUrl", 45000, 1, 1500, 1.5),
     CryptoCurrencyModel(
@@ -56,6 +59,7 @@ void main() {
     // assert
     verify(() => mockNetworkInfo.isConnected);
   });
+
   group("get single crypto currency", () {
     test(
         "should return remote data when the call to remote data source is successful",
@@ -67,8 +71,10 @@ void main() {
 
       final result = await repository.getCryptoCurrencyInfo(id);
 
-      verify(() => mockRemoteDataSource.getCryptoCurrencyInfo(id));
       expect(result, equals(const Right(cryptoCurrencyModel)));
+
+      verify(() => mockRemoteDataSource.getCryptoCurrencyInfo(id));
+      verifyNoMoreInteractions(mockRemoteDataSource);
     });
 
     test(
@@ -81,9 +87,10 @@ void main() {
 
         final result = await repository.getCryptoCurrencyInfo(id);
 
-        verify(() => mockRemoteDataSource.getCryptoCurrencyInfo(id));
-
         expect(result, equals(Left(ServerFailure())));
+
+        verify(() => mockRemoteDataSource.getCryptoCurrencyInfo(id));
+        verifyNoMoreInteractions(mockRemoteDataSource);
       },
     );
   });
@@ -93,14 +100,16 @@ void main() {
         "should return remote data when the call to remote data source is successful",
         () async {
       when(() => mockRemoteDataSource.getTopCryptoCurrencies())
-          .thenAnswer((_) async => topCryptoCurrencyModels);
+          .thenAnswer((_) async => cryptoCurrencyModels);
 
       when(() => mockNetworkInfo.isConnected).thenAnswer((_) async => true);
 
       final result = await repository.getTopCryptoCurrencies();
 
+      expect(result, equals(const Right(cryptoCurrencyModels)));
+
       verify(() => mockRemoteDataSource.getTopCryptoCurrencies());
-      expect(result, equals(const Right(topCryptoCurrencyModels)));
+      verifyNoMoreInteractions(mockRemoteDataSource);
     });
     test(
       'should return server failure when the call to remote data source is unsuccessful',
@@ -112,10 +121,120 @@ void main() {
 
         final result = await repository.getTopCryptoCurrencies();
 
-        verify(() => mockRemoteDataSource.getTopCryptoCurrencies());
-
         expect(result, equals(Left(ServerFailure())));
+
+        verify(() => mockRemoteDataSource.getTopCryptoCurrencies());
+        verifyNoMoreInteractions(mockRemoteDataSource);
       },
     );
+  });
+
+  group("get favorite crypto currencies", () {
+    test("should return data from local storage and remote source", () async {
+      when(() => mockLocalDataSource.getFavoriteCryptoCurrency())
+          .thenAnswer((_) async => ids);
+
+      when(() => mockRemoteDataSource.getCryptoCurrencyArray(ids))
+          .thenAnswer((_) async => cryptoCurrencyModels);
+
+      final result = await repository.getFavoriteCryptoCurrencies();
+
+      expect(result, Right(cryptoCurrencyModels));
+
+      verify(() => mockLocalDataSource.getFavoriteCryptoCurrency());
+      verify(() => mockRemoteDataSource.getCryptoCurrencyArray(ids));
+
+      verifyNoMoreInteractions(mockLocalDataSource);
+      verifyNoMoreInteractions(mockRemoteDataSource);
+    });
+
+    test("should return local storage failure on getting favorite", () async {
+      when(() => mockLocalDataSource.getFavoriteCryptoCurrency())
+          .thenThrow(StorageException());
+
+      final result = await repository.getFavoriteCryptoCurrencies();
+
+      expect(result, Left(StorageFailure()));
+
+      verify(() => mockLocalDataSource.getFavoriteCryptoCurrency());
+
+      verifyNever(() => mockRemoteDataSource.getCryptoCurrencyArray(any()));
+
+      verifyNoMoreInteractions(mockLocalDataSource);
+    });
+
+    test("should return remote source failure on getting favorite", () async {
+      when(() => mockLocalDataSource.getFavoriteCryptoCurrency())
+          .thenAnswer((_) async => ids);
+
+      when(() => mockRemoteDataSource.getCryptoCurrencyArray(ids))
+          .thenThrow(ServerException());
+
+      final result = await repository.getFavoriteCryptoCurrencies();
+
+      expect(result, Left(ServerFailure()));
+
+      verify(() => mockLocalDataSource.getFavoriteCryptoCurrency());
+      verify(() => mockRemoteDataSource.getCryptoCurrencyArray(ids));
+
+      verifyNoMoreInteractions(mockLocalDataSource);
+      verifyNoMoreInteractions(mockRemoteDataSource);
+    });
+  });
+
+  group("add favorite crypto currency", () {
+    test("should add new favorite crypto currency", () async {
+      when(() => mockLocalDataSource.addFavoriteCurrency(id))
+          .thenAnswer((_) async => NoReturn());
+
+      var result = await repository.addFavoriteCryptoCurrency(id);
+
+      expect(result, equals(Right(NoReturn())));
+
+      verify(() => mockLocalDataSource.addFavoriteCurrency(id));
+
+      verifyNoMoreInteractions(mockLocalDataSource);
+    });
+
+    test("sould return local storege failure on adding to favorite", () async {
+      when(() => mockLocalDataSource.addFavoriteCurrency(id))
+          .thenThrow(StorageException());
+
+      var result = await repository.addFavoriteCryptoCurrency(id);
+
+      expect(result, equals(Left(StorageFailure())));
+
+      verify(() => mockLocalDataSource.addFavoriteCurrency(id));
+
+      verifyNoMoreInteractions(mockLocalDataSource);
+    });
+  });
+
+  group("remove favorite crypto currency", () {
+    test("should remove favorite crypto currency", () async {
+      when(() => mockLocalDataSource.removeFavoriteCurrency(id))
+          .thenAnswer((_) async => NoReturn());
+
+      var result = await repository.removeFavoriteCryptoCurrency(id);
+
+      expect(result, equals(Right(NoReturn())));
+
+      verify(() => mockLocalDataSource.removeFavoriteCurrency(id));
+
+      verifyNoMoreInteractions(mockLocalDataSource);
+    });
+
+    test("sould return local storege failure on removing from favorite", () async {
+      when(() => mockLocalDataSource.removeFavoriteCurrency(id))
+          .thenThrow(StorageException());
+
+      var result = await repository.removeFavoriteCryptoCurrency(id);
+
+      expect(result, equals(Left(StorageFailure())));
+
+      verify(() => mockLocalDataSource.removeFavoriteCurrency(id));
+
+      verifyNoMoreInteractions(mockLocalDataSource);
+    });
   });
 }
