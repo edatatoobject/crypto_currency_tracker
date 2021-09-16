@@ -18,7 +18,7 @@ void main() {
     dataSource = CryptoCurrencyLocalDataSourceImpl(mockSharedPreferences);
   });
 
-  const favoriteCacheProperty = "favotire";
+  const favoriteProperty = CryptoCurrencyLocalDataSourceImpl.favoriteProperty;
 
   const firstFavoriteId = "bitcoin";
   const secondFavoriteId = "ethereum";
@@ -27,7 +27,7 @@ void main() {
 
   group("getFavoriteCryptoCurrency", () {
     test("shoul return array of favorite crypto currency ids", () async {
-      when(() => mockSharedPreferences.getStringList(favoriteCacheProperty))
+      when(() => mockSharedPreferences.getStringList(favoriteProperty))
           .thenReturn((jsonDecode(fixture("crypto_currency_favorite.json"))
                   as List<dynamic>)
               .cast<String>());
@@ -41,7 +41,7 @@ void main() {
     });
 
     test("should return empty list if cache empty", () async {
-      when(() => mockSharedPreferences.getStringList(favoriteCacheProperty))
+      when(() => mockSharedPreferences.getStringList(favoriteProperty))
           .thenReturn(null);
 
       final result = await dataSource.getFavoriteCryptoCurrency();
@@ -55,35 +55,35 @@ void main() {
 
   group("add and remove FavoriteCryptoCurrency", () {
     test("should add favorite crypto currency", () async {
-      when(() => mockSharedPreferences.getStringList(favoriteCacheProperty))
+      when(() => mockSharedPreferences.getStringList(favoriteProperty))
           .thenReturn(favoriteSingleId);
 
       when(() => mockSharedPreferences.setStringList(
-              favoriteCacheProperty, favoriteIds))
+              favoriteProperty, favoriteIds))
           .thenAnswer((_) async => true);
 
       await dataSource.addFavoriteCurrency(secondFavoriteId);
 
-      verify(() => mockSharedPreferences.getStringList(favoriteCacheProperty));
+      verify(() => mockSharedPreferences.getStringList(favoriteProperty));
       verify(() => mockSharedPreferences.setStringList(
-          favoriteCacheProperty, favoriteIds));
+          favoriteProperty, favoriteIds));
 
       verifyNoMoreInteractions(mockSharedPreferences);
     });
 
     test("should remove favorite crypto currency", () async {
-      when(() => mockSharedPreferences.getStringList(favoriteCacheProperty))
+      when(() => mockSharedPreferences.getStringList(favoriteProperty))
           .thenReturn(favoriteSingleId);
 
       when(() => mockSharedPreferences.setStringList(
-              favoriteCacheProperty, []))
+              favoriteProperty, []))
           .thenAnswer((_) async => true);
 
       await dataSource.removeFavoriteCurrency(firstFavoriteId);
 
-      verify(() => mockSharedPreferences.getStringList(favoriteCacheProperty));
+      verify(() => mockSharedPreferences.getStringList(favoriteProperty));
       verify(
-          () => mockSharedPreferences.setStringList(favoriteCacheProperty, []));
+          () => mockSharedPreferences.setStringList(favoriteProperty, []));
 
       verifyNoMoreInteractions(mockSharedPreferences);
     });
