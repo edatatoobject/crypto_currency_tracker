@@ -49,19 +49,19 @@ void main() {
 
   test('initialState should be Empty', () {
     // assert
-    expect(bloc.state, equals(Empty()));
+    expect(bloc.state, equals(EmptyState()));
   });
 
   group("addFavoriteCryptoCurrency", () {
     test("should add currency to favorite", () async {
-      when(() => mockAddFavorite(IdParams(id: id)))
+      when(() => mockAddFavorite(const IdParams(id: id)))
           .thenAnswer((_) async => Right(NoReturn()));
 
       bloc.add(AddFavoriteCryptoCurrencyEvent(id));
 
       await untilCalled(() => mockAddFavorite(any()));
 
-      verify(() => mockAddFavorite(IdParams(id: id)));
+      verify(() => mockAddFavorite(const IdParams(id: id)));
     });
   });
 }

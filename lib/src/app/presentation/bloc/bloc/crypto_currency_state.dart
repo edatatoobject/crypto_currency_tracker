@@ -8,26 +8,31 @@ abstract class CryptoCurrencyState extends Equatable {
   List<Object> get props => [...properties];
 }
 
-class Empty extends CryptoCurrencyState {}
+class EmptyState extends CryptoCurrencyState {}
 
-class Loading extends CryptoCurrencyState {}
+class LoadingState extends CryptoCurrencyState {}
 
-class Loaded extends CryptoCurrencyState {
+class LoadedState extends CryptoCurrencyState {
   final CryptoCurrency cryptoCurrency;
 
-  Loaded(this.cryptoCurrency) : super([cryptoCurrency]);
+  LoadedState(this.cryptoCurrency) : super([cryptoCurrency]);
 }
 
-class LoadedList extends CryptoCurrencyState {
+class LoadedListState extends CryptoCurrencyState {
   final List<CryptoCurrency> cryptoCurrencies;
 
-  LoadedList(this.cryptoCurrencies) : super([cryptoCurrencies]);
+  LoadedListState(this.cryptoCurrencies) : super([cryptoCurrencies]);
 }
 
+class LoadingProcessState extends CryptoCurrencyState {
+  final CryptoCurrencyState previusState;
 
+  LoadingProcessState(this.previusState) : super([previusState]);
+}
 
 class Error extends CryptoCurrencyState {
   final String message;
+  final CryptoCurrencyState previusState;
 
-  Error(this.message) : super([message]);
+  Error(this.message, this.previusState) : super([message, previusState]);
 }

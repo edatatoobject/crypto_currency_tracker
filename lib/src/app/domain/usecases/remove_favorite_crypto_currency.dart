@@ -1,5 +1,4 @@
 import 'package:crypto_currency_tracker/src/app/domain/repositories/cyrpto_currency_repository.dart';
-import 'package:crypto_currency_tracker/src/core/error/exception.dart';
 import 'package:crypto_currency_tracker/src/core/error/failure.dart';
 import 'package:crypto_currency_tracker/src/core/usecases/usecase.dart';
 import 'package:dartz/dartz.dart';

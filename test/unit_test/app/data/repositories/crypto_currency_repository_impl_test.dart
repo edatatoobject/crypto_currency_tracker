@@ -139,7 +139,7 @@ void main() {
 
       final result = await repository.getFavoriteCryptoCurrencies();
 
-      expect(result, Right(cryptoCurrencyModels));
+      expect(result, const Right(cryptoCurrencyModels));
 
       verify(() => mockLocalDataSource.getFavoriteCryptoCurrency());
       verify(() => mockRemoteDataSource.getCryptoCurrencyArray(ids));
