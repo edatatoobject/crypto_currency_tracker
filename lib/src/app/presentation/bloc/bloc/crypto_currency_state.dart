@@ -30,9 +30,9 @@ class LoadingProcessState extends CryptoCurrencyState {
   LoadingProcessState(this.previusState) : super([previusState]);
 }
 
-class Error extends CryptoCurrencyState {
+class ErrorState extends CryptoCurrencyState {
   final String message;
   final CryptoCurrencyState previusState;
 
-  Error(this.message, this.previusState) : super([message, previusState]);
+  ErrorState(this.message, this.previusState) : super([message, previusState]);
 }

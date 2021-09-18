@@ -2,9 +2,9 @@ import 'package:crypto_currency_tracker/src/app/domain/entities/crypto_currency.
 
 class CryptoCurrencyModel extends CryptoCurrency {
   const CryptoCurrencyModel(String id, String name, String symbol, String imageUrl,
-      double price, int ranc, double priceChange, double pricaChangePersentage)
+      double price, int ranc, double priceChange, double pricaChangePersentage, [bool favorite = false])
       : super(id, name, symbol, imageUrl, price, ranc, priceChange,
-            pricaChangePersentage);
+            pricaChangePersentage, favorite);
 
   factory CryptoCurrencyModel.fromJson(Map<String, dynamic> json) {
     return CryptoCurrencyModel(

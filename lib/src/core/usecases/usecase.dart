@@ -9,20 +9,9 @@ abstract class UseCase<Type, Params> {
   Future<Either<Failure, Type>> call(Params params);
 }
 
-abstract class UseCaseWithNoReturn<Params> {
-  Future<Either<Failure, NoReturn>> call(Params params);
-}
-
 // This will be used by the code calling the use case whenever the use case
 // doesn't accept any parameters.
 class NoParams extends Equatable {
   @override
   List<Object?> get props => throw UnimplementedError();
-}
-
-// This will be used by the code that have nothing to return
-class NoReturn extends Equatable{
-  @override
-  List<Object?> get props => [];
-
 }

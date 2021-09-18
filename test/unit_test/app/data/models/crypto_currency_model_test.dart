@@ -1,7 +1,6 @@
 import 'dart:convert';
 
 import 'package:crypto_currency_tracker/src/app/data/models/crypto_currency_model.dart';
-import 'package:crypto_currency_tracker/src/app/domain/entities/crypto_currency.dart';
 import 'package:flutter_test/flutter_test.dart';
 
 import '../../../../fixtures/fixture_reader.dart';
@@ -13,7 +12,7 @@ void main() {
   test(
     'should be a subclass of CryptoCoin entity',
     () async {
-      expect(cryptoCurrencyModel, isA<CryptoCurrency>());
+      expect(cryptoCurrencyModel, isA<CryptoCurrencyModel>());
     },
   );
   group("from json", () {

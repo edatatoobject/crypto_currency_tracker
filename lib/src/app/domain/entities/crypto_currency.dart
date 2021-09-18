@@ -9,9 +9,11 @@ class CryptoCurrency extends Equatable {
   final int ranc;
   final double priceChange;
   final double pricaChangePersentage;
+  final bool favorite;
 
-  const CryptoCurrency(this.id, this.name, this.symbol, this.imageUrl, this.price, this.ranc,
-      this.priceChange, this.pricaChangePersentage);
+  const CryptoCurrency(this.id, this.name, this.symbol, this.imageUrl,
+      this.price, this.ranc, this.priceChange, this.pricaChangePersentage,
+      [this.favorite = false]);
 
   @override
   List<Object> get props =>
