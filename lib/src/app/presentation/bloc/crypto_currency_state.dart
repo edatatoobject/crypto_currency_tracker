@@ -8,8 +8,6 @@ abstract class CryptoCurrencyState extends Equatable {
   List<Object> get props => [...properties];
 }
 
-class EmptyState extends CryptoCurrencyState {}
-
 class LoadingState extends CryptoCurrencyState {}
 
 class LoadedState extends CryptoCurrencyState {

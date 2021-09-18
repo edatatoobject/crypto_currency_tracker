@@ -62,11 +62,6 @@ void main() {
     CryptoCurrency("ethereum", "Ethereum", "ETH", "imageUrl", 3000, 2, 100, 1)
   ];
 
-  test('initialState should be Empty', () {
-    // assert
-    expect(bloc.state, equals(EmptyState()));
-  });
-
   group("addFavoriteCryptoCurrency", () {
     test("should add currency to favorite", () async {
       when(() => mockAddFavorite(any()))

@@ -9,7 +9,6 @@ import 'package:crypto_currency_tracker/src/app/domain/usecases/params/id_and_cr
 import 'package:crypto_currency_tracker/src/app/domain/usecases/remove_favorite_crypto_currency.dart';
 import 'package:crypto_currency_tracker/src/core/error/failure.dart';
 import 'package:crypto_currency_tracker/src/core/usecases/usecase.dart';
-import 'package:dartz/dartz.dart';
 import 'package:equatable/equatable.dart';
 
 part 'crypto_currency_event.dart';
@@ -27,7 +26,7 @@ class CryptoCurrencyBloc
       required this.removeFavorite,
       required this.getTopCryptoCurrencies,
       required this.getFavoriteCryptoCurrency})
-      : super(EmptyState());
+      : super(LoadingState());
 
   @override
   Stream<CryptoCurrencyState> mapEventToState(
@@ -70,9 +69,8 @@ class CryptoCurrencyBloc
       GetTopCryptoCurrenciesEvent event) async* {
     var getTopResult = await getTopCryptoCurrencies(NoParams());
 
-    yield* getTopResult.fold((failure) => _onFailure(failure),
-        (cryptoCurrencies) async* {
-      yield LoadedState(cryptoCurrencies);
+    yield getTopResult.fold((failure) => state, (cryptoCurrencies) {
+      return LoadedState(cryptoCurrencies);
     });
   }
 
