@@ -3,7 +3,7 @@ import 'package:crypto_currency_tracker/src/app/domain/usecases/get_crypto_curre
 import 'package:crypto_currency_tracker/src/app/domain/usecases/get_favorite_crypto_currencies.dart';
 import 'package:crypto_currency_tracker/src/app/domain/usecases/get_top_crypto_currencies.dart';
 import 'package:crypto_currency_tracker/src/app/domain/usecases/remove_favorite_crypto_currency.dart';
-import 'package:crypto_currency_tracker/src/app/presentation/bloc/bloc/crypto_currency_bloc.dart';
+import 'package:crypto_currency_tracker/src/app/presentation/bloc/crypto_currency_bloc.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mocktail/mocktail.dart';
 
