@@ -18,10 +18,10 @@ class LoadedState extends CryptoCurrencyState {
   LoadedState(this.cryptoCurrency) : super([cryptoCurrency]);
 }
 
-class LoadingProcessState extends CryptoCurrencyState {
-  final CryptoCurrencyState previusState;
+class FavoriteLoadedState extends CryptoCurrencyState {
+  final List<CryptoCurrency> cryptoCurrency;
 
-  LoadingProcessState(this.previusState) : super([previusState]);
+  FavoriteLoadedState(this.cryptoCurrency) : super([cryptoCurrency]);
 }
 
 class ErrorState extends CryptoCurrencyState {

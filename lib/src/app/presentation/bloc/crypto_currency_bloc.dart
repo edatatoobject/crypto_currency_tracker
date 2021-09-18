@@ -9,6 +9,7 @@ import 'package:crypto_currency_tracker/src/app/domain/usecases/params/id_and_cr
 import 'package:crypto_currency_tracker/src/app/domain/usecases/remove_favorite_crypto_currency.dart';
 import 'package:crypto_currency_tracker/src/core/error/failure.dart';
 import 'package:crypto_currency_tracker/src/core/usecases/usecase.dart';
+import 'package:dartz/dartz.dart';
 import 'package:equatable/equatable.dart';
 
 part 'crypto_currency_event.dart';
@@ -33,29 +34,56 @@ class CryptoCurrencyBloc
     CryptoCurrencyEvent event,
   ) async* {
     if (event is AddFavoriteCryptoCurrencyEvent) {
-      var addFavoriteResult = await addFavorite(IdAndCryptoCurrenciesParams(
-          id: event.id, cryptoCurrencies: event.cryptoCurrencies));
-
-      yield* addFavoriteResult.fold((failure) => _onFailure(failure),
-          (cryptoCurrencies) async* {
-        yield LoadedState(cryptoCurrencies);
-      });
+      yield* _addFavoriteEvent(event);
     } else if (event is RemoveFavoriteCryptoCurrencyEvent) {
-      var addFavoriteResult = await removeFavorite(IdAndCryptoCurrenciesParams(
-          id: event.id, cryptoCurrencies: event.cryptoCurrencies));
-
-      yield* addFavoriteResult.fold((failure) => _onFailure(failure),
-          (cryptoCurrencies) async* {
-        yield LoadedState(cryptoCurrencies);
-      });
+      yield* _removeFavoriteEvent(event);
     } else if (event is GetTopCryptoCurrenciesEvent) {
-      var getTopResult = await getTopCryptoCurrencies(NoParams());
-
-      yield* getTopResult.fold((failure) => _onFailure(failure),
-          (cryptoCurrencies) async* {
-        yield LoadedState(cryptoCurrencies);
-      });
+      yield* _getTopEvent(event);
+    } else if (event is GetFavoriteCryptoCurrenciesEvent) {
+      yield* _getFavoriteEvent(event);
     }
+  }
+
+  Stream<CryptoCurrencyState> _addFavoriteEvent(
+      AddFavoriteCryptoCurrencyEvent event) async* {
+    var addFavoriteResult = await addFavorite(IdAndCryptoCurrenciesParams(
+        id: event.id, cryptoCurrencies: event.cryptoCurrencies));
+
+    yield* addFavoriteResult.fold((failure) => _onFailure(failure),
+        (cryptoCurrencies) async* {
+      yield LoadedState(cryptoCurrencies);
+    });
+  }
+
+  Stream<CryptoCurrencyState> _removeFavoriteEvent(
+      RemoveFavoriteCryptoCurrencyEvent event) async* {
+    var removeFavoriteResult = await removeFavorite(IdAndCryptoCurrenciesParams(
+        id: event.id, cryptoCurrencies: event.cryptoCurrencies));
+
+    yield* removeFavoriteResult.fold((failure) => _onFailure(failure),
+        (cryptoCurrencies) async* {
+      yield LoadedState(cryptoCurrencies);
+    });
+  }
+
+  Stream<CryptoCurrencyState> _getTopEvent(
+      GetTopCryptoCurrenciesEvent event) async* {
+    var getTopResult = await getTopCryptoCurrencies(NoParams());
+
+    yield* getTopResult.fold((failure) => _onFailure(failure),
+        (cryptoCurrencies) async* {
+      yield LoadedState(cryptoCurrencies);
+    });
+  }
+
+  Stream<CryptoCurrencyState> _getFavoriteEvent(
+      GetFavoriteCryptoCurrenciesEvent event) async* {
+    var getFavoriteResult = await getFavoriteCryptoCurrency(NoParams());
+
+    yield* getFavoriteResult.fold((failure) => _onFailure(failure),
+        (cryptoCurrencies) async* {
+      yield FavoriteLoadedState(cryptoCurrencies);
+    });
   }
 
   Stream<CryptoCurrencyState> _onFailure(Failure failure) async* {

@@ -29,14 +29,17 @@ void main() {
   ];
 
   test("should remove crypto currency from favorites", () async {
-    when(() => mockCryptoCurrencyRepository.removeFavoriteCryptoCurrency(id, favoriteCryptoCurrencys))
+    when(() => mockCryptoCurrencyRepository.removeFavoriteCryptoCurrency(
+            id, favoriteCryptoCurrencys))
         .thenAnswer((_) async => Right(CryptoCurrencys));
 
-    var result = await usecase(const IdAndCryptoCurrenciesParams(id: id, cryptoCurrencies: favoriteCryptoCurrencys));
+    var result = await usecase(const IdAndCryptoCurrenciesParams(
+        id: id, cryptoCurrencies: favoriteCryptoCurrencys));
 
     expect(result, Right(CryptoCurrencys));
 
-    verify(() => mockCryptoCurrencyRepository.removeFavoriteCryptoCurrency(id, CryptoCurrencys));
+    verify(() => mockCryptoCurrencyRepository.removeFavoriteCryptoCurrency(
+        id, CryptoCurrencys));
     verifyNoMoreInteractions(mockCryptoCurrencyRepository);
   });
 }
