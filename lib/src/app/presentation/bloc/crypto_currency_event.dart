@@ -10,20 +10,16 @@ abstract class CryptoCurrencyEvent extends Equatable {
 
 class AddFavoriteCryptoCurrencyEvent extends CryptoCurrencyEvent {
   final String id;
+  final List<CryptoCurrency> cryptoCurrencies;
 
-  AddFavoriteCryptoCurrencyEvent(this.id) : super([id]);
+  AddFavoriteCryptoCurrencyEvent(this.id, this.cryptoCurrencies) : super([id, cryptoCurrencies]);
 }
 
 class RemoveFavoriteCryptoCurrencyEvent extends CryptoCurrencyEvent {
   final String id;
+  final List<CryptoCurrency> cryptoCurrencies;
 
-  RemoveFavoriteCryptoCurrencyEvent(this.id) : super([id]);
-}
-
-class GetCryptoCurrencyInfoEvent extends CryptoCurrencyEvent {
-  final String id;
-
-  GetCryptoCurrencyInfoEvent(this.id) : super([id]);
+  RemoveFavoriteCryptoCurrencyEvent(this.id, this.cryptoCurrencies) : super([id, cryptoCurrencies]);
 }
 
 class GetFavoriteCryptoCurrenciesEvent extends CryptoCurrencyEvent {}

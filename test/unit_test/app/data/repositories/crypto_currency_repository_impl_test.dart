@@ -61,52 +61,6 @@ void main() {
         "bitcoin", "Bitcoin", "BTC", "imageUrl", 45000, 1, 1500, 1.5, true),
   ];
 
-  test("should check if the device is online", () {
-    when(() => mockRemoteDataSource.getCryptoCurrencyInfo(id))
-        .thenAnswer((_) async => cryptoCurrencyModel);
-
-    when(() => mockNetworkInfo.isConnected).thenAnswer((_) async => true);
-    // act
-    repository.getCryptoCurrencyInfo(id);
-    // assert
-    verify(() => mockNetworkInfo.isConnected);
-  });
-
-  group("getSingleCryptoCurrency", () {
-    test(
-        "should return remote data when the call to remote data source is successful",
-        () async {
-      when(() => mockRemoteDataSource.getCryptoCurrencyInfo(id))
-          .thenAnswer((_) async => cryptoCurrencyModel);
-
-      when(() => mockNetworkInfo.isConnected).thenAnswer((_) async => true);
-
-      final result = await repository.getCryptoCurrencyInfo(id);
-
-      expect(result, equals(const Right(cryptoCurrencyModel)));
-
-      verify(() => mockRemoteDataSource.getCryptoCurrencyInfo(id));
-      verifyNoMoreInteractions(mockRemoteDataSource);
-    });
-
-    test(
-      'should return server failure when the call to remote data source is unsuccessful',
-      () async {
-        when(() => mockRemoteDataSource.getCryptoCurrencyInfo(id))
-            .thenThrow(ServerException());
-
-        when(() => mockNetworkInfo.isConnected).thenAnswer((_) async => true);
-
-        final result = await repository.getCryptoCurrencyInfo(id);
-
-        expect(result, equals(Left(ServerFailure())));
-
-        verify(() => mockRemoteDataSource.getCryptoCurrencyInfo(id));
-        verifyNoMoreInteractions(mockRemoteDataSource);
-      },
-    );
-  });
-
   group("getTopCryptoCurrecies", () {
     test(
         "should return remote data when the call to remote data source is successful",

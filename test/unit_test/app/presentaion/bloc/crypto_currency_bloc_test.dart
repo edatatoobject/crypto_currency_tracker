@@ -1,9 +1,11 @@
+import 'package:crypto_currency_tracker/src/app/domain/entities/crypto_currency.dart';
 import 'package:crypto_currency_tracker/src/app/domain/usecases/add_favorite_crypto_currency.dart';
-import 'package:crypto_currency_tracker/src/app/domain/usecases/get_crypto_currency_info.dart';
 import 'package:crypto_currency_tracker/src/app/domain/usecases/get_favorite_crypto_currencies.dart';
 import 'package:crypto_currency_tracker/src/app/domain/usecases/get_top_crypto_currencies.dart';
+import 'package:crypto_currency_tracker/src/app/domain/usecases/params/id_and_crypto_currencies_params.dart';
 import 'package:crypto_currency_tracker/src/app/domain/usecases/remove_favorite_crypto_currency.dart';
 import 'package:crypto_currency_tracker/src/app/presentation/bloc/crypto_currency_bloc.dart';
+import 'package:dartz/dartz.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mocktail/mocktail.dart';
 
@@ -13,7 +15,6 @@ class MockAddFavoriteCryptoCurrency extends Mock
 class MockRemoveFavoriteCryptoCurrency extends Mock
     implements RemoveFavoriteCryptoCurrency {}
 
-class MockGetCryptoCurrencyInfo extends Mock implements GetCryptoCurrencyInfo {}
 
 class MockGetTopCryptoCurrency extends Mock implements GetTopCryptoCurrencies {}
 
@@ -24,25 +25,34 @@ void main() {
   late CryptoCurrencyBloc bloc;
   late MockAddFavoriteCryptoCurrency mockAddFavorite;
   late MockRemoveFavoriteCryptoCurrency mockRemoveFavorite;
-  late MockGetCryptoCurrencyInfo mockGetInfo;
   late MockGetTopCryptoCurrency mockGetTop;
   late MockGetFavoriteCryptoCurrency mockGetFavotire;
 
   setUp(() {
+    registerFallbackValue<IdAndCryptoCurrenciesParams>(
+        IdAndCryptoCurrenciesParams(id: any(), cryptoCurrencies: any()));
     mockAddFavorite = MockAddFavoriteCryptoCurrency();
     mockRemoveFavorite = MockRemoveFavoriteCryptoCurrency();
-    mockGetInfo = MockGetCryptoCurrencyInfo();
     mockGetTop = MockGetTopCryptoCurrency();
     mockGetFavotire = MockGetFavoriteCryptoCurrency();
     bloc = CryptoCurrencyBloc(
         addFavorite: mockAddFavorite,
         removeFavorite: mockRemoveFavorite,
-        getCryptoCurrencyInfo: mockGetInfo,
         getTopCryptoCurrencies: mockGetTop,
         getFavoriteCryptoCurrency: mockGetFavotire);
   });
 
   const id = "bitcoin";
+
+  const List<CryptoCurrency> cryptoCurrencies = [
+    CryptoCurrency(
+        "bitcoin", "Bitcoin", "BTC", "imageUrl", 45000, 1, 1500, 1.5),
+  ];
+
+  const List<CryptoCurrency> favoriteCryptoCurrencies = [
+    CryptoCurrency(
+        "bitcoin", "Bitcoin", "BTC", "imageUrl", 45000, 1, 1500, 1.5, true),
+  ];
 
   test('initialState should be Empty', () {
     // assert
@@ -50,15 +60,27 @@ void main() {
   });
 
   group("addFavoriteCryptoCurrency", () {
-    // test("should add currency to favorite", () async {
-    //   when(() => mockAddFavorite(const IdAndCryptoCurrenciesParams(id: id)))
-    //       .thenAnswer((_) async => Right(NoReturn()));
+    test("should add currency to favorite", () async {
+      when(() => mockAddFavorite(any()))
+          .thenAnswer((_) async => Right(favoriteCryptoCurrencies));
 
-    //   bloc.add(AddFavoriteCryptoCurrencyEvent(id));
+      bloc.add(AddFavoriteCryptoCurrencyEvent(id, cryptoCurrencies));
 
-    //   await untilCalled(() => mockAddFavorite(any()));
+      await untilCalled(() => mockAddFavorite(any()));
 
-    //   verify(() => mockAddFavorite(const IdAndCryptoCurrenciesParams(id: id)));
-    // });
+      verify(() => mockAddFavorite(any()));
+    });
+  });
+  group("removeFavoriteCryptoCurrency", () {
+    test("should add currency to favorite", () async {
+      when(() => mockAddFavorite(any()))
+          .thenAnswer((_) async => Right(cryptoCurrencies));
+
+      bloc.add(AddFavoriteCryptoCurrencyEvent(id, favoriteCryptoCurrencies));
+
+      await untilCalled(() => mockAddFavorite(any()));
+
+      verify(() => mockAddFavorite(any()));
+    });
   });
 }

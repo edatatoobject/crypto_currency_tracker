@@ -18,17 +18,6 @@ class CryptoCurrencyRepositoryImpl implements CryptoCurrencyRepository {
       this.favoriteToggleService, this.networkInfo);
 
   @override
-  Future<Either<Failure, CryptoCurrency>> getCryptoCurrencyInfo(
-      String id) async {
-    networkInfo.isConnected;
-    try {
-      return Right(await remoteDataSource.getCryptoCurrencyInfo(id));
-    } on ServerException {
-      return Left(ServerFailure());
-    }
-  }
-
-  @override
   Future<Either<Failure, List<CryptoCurrency>>> getTopCryptoCurrencies() async {
     networkInfo.isConnected;
     try {

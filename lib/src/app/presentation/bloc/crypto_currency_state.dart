@@ -13,15 +13,9 @@ class EmptyState extends CryptoCurrencyState {}
 class LoadingState extends CryptoCurrencyState {}
 
 class LoadedState extends CryptoCurrencyState {
-  final CryptoCurrency cryptoCurrency;
+  final List<CryptoCurrency> cryptoCurrency;
 
   LoadedState(this.cryptoCurrency) : super([cryptoCurrency]);
-}
-
-class LoadedListState extends CryptoCurrencyState {
-  final List<CryptoCurrency> cryptoCurrencies;
-
-  LoadedListState(this.cryptoCurrencies) : super([cryptoCurrencies]);
 }
 
 class LoadingProcessState extends CryptoCurrencyState {

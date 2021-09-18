@@ -19,7 +19,7 @@ void main() {
   });
 
   const id = "bitcoin";
-  const List<CryptoCurrency> CryptoCurrencys = [
+  const List<CryptoCurrency> cryptoCurrencies = [
     CryptoCurrency(
         "bitcoin", "Bitcoin", "BTC", "imageUrl", 45000, 1, 1500, 1.5),
   ];
@@ -31,15 +31,15 @@ void main() {
 
   test("should add crypto currency to favorites", () async {
     when(() => mockCryptoCurrencyRepository.addFavoriteCryptoCurrency(
-            id, CryptoCurrencys))
+            id, cryptoCurrencies))
         .thenAnswer((_) async => Right(favoriteCryptoCurrencys));
 
     var result = await usecase(const IdAndCryptoCurrenciesParams(
-        id: id, cryptoCurrencies: CryptoCurrencys));
+        id: id, cryptoCurrencies: cryptoCurrencies));
 
     expect(result, Right(favoriteCryptoCurrencys));
 
-    verify(() => mockCryptoCurrencyRepository.addFavoriteCryptoCurrency(id, CryptoCurrencys));
+    verify(() => mockCryptoCurrencyRepository.addFavoriteCryptoCurrency(id, cryptoCurrencies));
     verifyNoMoreInteractions(mockCryptoCurrencyRepository);
   });
 }

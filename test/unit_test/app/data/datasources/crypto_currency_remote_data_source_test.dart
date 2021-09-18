@@ -22,8 +22,6 @@ void main() {
 
   final topCryptoCurrencyUrl = Uri.parse(
       "https://api.coingecko.com/api/v3/coins/markets?vs_currency=usd&per_page=20");
-  final cryptoCurrencyInfoUrl = Uri.parse(
-      "https://api.coingecko.com/api/v3/coins/markets?vs_currency=usd&ids=bitcoin");
   final cryptoCurrencyArrayInfoUrl = Uri.parse(
       "https://api.coingecko.com/api/v3/coins/markets?vs_currency=usd&ids=bitcoin,ethereum");
 
@@ -61,32 +59,6 @@ void main() {
           throwsA(const TypeMatcher<ServerException>()));
 
       verify(() => mockHttpClient.get(topCryptoCurrencyUrl));
-    });
-  });
-
-  group("getCryptoCurrencyInfo", () {
-    test("should return crypto currency info by id", () async {
-      when(() => mockHttpClient.get(cryptoCurrencyInfoUrl)).thenAnswer(
-          (_) async => Response(
-              fixture("crypto_currency_responce.json"), HttpStatus.ok));
-
-      var result = await dataSource.getCryptoCurrencyInfo(id);
-
-      expect(result, cryptoCurrencyModel);
-
-      verify(() => mockHttpClient.get(cryptoCurrencyInfoUrl));
-
-      verifyNoMoreInteractions(mockHttpClient);
-    });
-
-    test("should throw exception on error code", () {
-      when(() => mockHttpClient.get(cryptoCurrencyInfoUrl))
-          .thenAnswer((_) async => Response("", HttpStatus.badRequest));
-
-      expect(() async => await dataSource.getCryptoCurrencyInfo(id),
-          throwsA(const TypeMatcher<ServerException>()));
-
-      verify(() => mockHttpClient.get(cryptoCurrencyInfoUrl));
     });
   });
 
