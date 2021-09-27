@@ -5,7 +5,7 @@ import 'package:crypto_currency_tracker/src/app/domain/entities/crypto_currency.
 import 'package:crypto_currency_tracker/src/app/domain/usecases/add_favorite_crypto_currency.dart';
 import 'package:crypto_currency_tracker/src/app/domain/usecases/get_favorite_crypto_currencies.dart';
 import 'package:crypto_currency_tracker/src/app/domain/usecases/get_top_crypto_currencies.dart';
-import 'package:crypto_currency_tracker/src/app/domain/usecases/params/id_and_crypto_currencies_params.dart';
+import 'package:crypto_currency_tracker/src/app/domain/usecases/params/id_params.dart';
 import 'package:crypto_currency_tracker/src/app/domain/usecases/remove_favorite_crypto_currency.dart';
 import 'package:crypto_currency_tracker/src/core/error/failure.dart';
 import 'package:crypto_currency_tracker/src/core/usecases/usecase.dart';
@@ -45,30 +45,19 @@ class CryptoCurrencyBloc
 
   Stream<CryptoCurrencyState> _addFavoriteEvent(
       AddFavoriteCryptoCurrencyEvent event) async* {
-    var addFavoriteResult = await addFavorite(IdAndCryptoCurrenciesParams(
-        id: event.id, cryptoCurrencies: event.cryptoCurrencies));
-
-    yield* addFavoriteResult.fold((failure) => _onFailure(failure),
-        (cryptoCurrencies) async* {
-      yield LoadedState(cryptoCurrencies);
-    });
+    await addFavorite(IdParams(id: event.id));
   }
 
   Stream<CryptoCurrencyState> _removeFavoriteEvent(
       RemoveFavoriteCryptoCurrencyEvent event) async* {
-    var removeFavoriteResult = await removeFavorite(IdAndCryptoCurrenciesParams(
-        id: event.id, cryptoCurrencies: event.cryptoCurrencies));
-
-    yield* removeFavoriteResult.fold((failure) => _onFailure(failure),
-        (cryptoCurrencies) async* {
-      yield LoadedState(cryptoCurrencies);
-    });
+    await removeFavorite(IdParams(
+      id: event.id,
+    ));
   }
 
   Stream<CryptoCurrencyState> _getTopEvent(
       GetTopCryptoCurrenciesEvent event) async* {
     yield LoadingState();
-
     var getTopResult = await getTopCryptoCurrencies(NoParams());
 
     yield getTopResult.fold((failure) => state, (cryptoCurrencies) {

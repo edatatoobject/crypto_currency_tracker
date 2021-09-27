@@ -2,7 +2,7 @@ import 'package:crypto_currency_tracker/src/app/domain/entities/crypto_currency.
 import 'package:crypto_currency_tracker/src/app/domain/usecases/add_favorite_crypto_currency.dart';
 import 'package:crypto_currency_tracker/src/app/domain/usecases/get_favorite_crypto_currencies.dart';
 import 'package:crypto_currency_tracker/src/app/domain/usecases/get_top_crypto_currencies.dart';
-import 'package:crypto_currency_tracker/src/app/domain/usecases/params/id_and_crypto_currencies_params.dart';
+import 'package:crypto_currency_tracker/src/app/domain/usecases/params/id_params.dart';
 import 'package:crypto_currency_tracker/src/app/domain/usecases/remove_favorite_crypto_currency.dart';
 import 'package:crypto_currency_tracker/src/app/presentation/bloc/crypto_currency_bloc.dart';
 import 'package:crypto_currency_tracker/src/core/usecases/usecase.dart';
@@ -29,8 +29,8 @@ void main() {
   late MockGetFavoriteCryptoCurrency mockGetFavotire;
 
   setUp(() {
-    registerFallbackValue<IdAndCryptoCurrenciesParams>(
-        IdAndCryptoCurrenciesParams(id: "", cryptoCurrencies: []));
+    registerFallbackValue<IdParams>(
+        IdParams(id: ""));
     registerFallbackValue<List<CryptoCurrency>>([]);
     registerFallbackValue<NoParams>(NoParams());
 
@@ -46,10 +46,6 @@ void main() {
   });
 
   const id = "bitcoin";
-  const List<CryptoCurrency> cryptoCurrencies = [
-    CryptoCurrency(
-        "bitcoin", "Bitcoin", "BTC", "imageUrl", 45000, 1, 1500, 1.5),
-  ];
 
   const List<CryptoCurrency> favoriteCryptoCurrencies = [
     CryptoCurrency(
@@ -65,9 +61,9 @@ void main() {
   group("addFavoriteCryptoCurrency", () {
     test("should add currency to favorite", () async {
       when(() => mockAddFavorite(any()))
-          .thenAnswer((_) async => Right(favoriteCryptoCurrencies));
+          .thenAnswer((_) async => Right(NoReturn()));
 
-      bloc.add(AddFavoriteCryptoCurrencyEvent(id, cryptoCurrencies));
+      bloc.add(AddFavoriteCryptoCurrencyEvent(id));
 
       await untilCalled(() => mockAddFavorite(any()));
 
@@ -77,9 +73,9 @@ void main() {
   group("removeFavoriteCryptoCurrency", () {
     test("should add currency to favorite", () async {
       when(() => mockRemoveFavorite(any()))
-          .thenAnswer((_) async => Right(cryptoCurrencies));
+          .thenAnswer((_) async => Right(NoReturn()));
 
-      bloc.add(RemoveFavoriteCryptoCurrencyEvent(id, favoriteCryptoCurrencies));
+      bloc.add(RemoveFavoriteCryptoCurrencyEvent(id));
 
       await untilCalled(() => mockRemoveFavorite(any()));
 

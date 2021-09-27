@@ -2,11 +2,12 @@ import 'package:crypto_currency_tracker/src/app/data/datasources/crypto_currency
 import 'package:crypto_currency_tracker/src/app/data/datasources/crypto_currency_remote_data_source.dart';
 import 'package:crypto_currency_tracker/src/app/data/models/crypto_currency_model.dart';
 import 'package:crypto_currency_tracker/src/app/data/repositories/crypto_currency_repository_impl.dart';
-import 'package:crypto_currency_tracker/src/app/data/services/favorite_toggle_service.dart';
+import 'package:crypto_currency_tracker/src/app/data/services/favorite_model_service.dart';
 import 'package:crypto_currency_tracker/src/app/domain/entities/crypto_currency.dart';
 import 'package:crypto_currency_tracker/src/core/error/exception.dart';
 import 'package:crypto_currency_tracker/src/core/error/failure.dart';
 import 'package:crypto_currency_tracker/src/core/network/network_info.dart';
+import 'package:crypto_currency_tracker/src/core/usecases/usecase.dart';
 import 'package:dartz/dartz.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mocktail/mocktail.dart';
@@ -17,7 +18,8 @@ class MockRemoteDataSource extends Mock
 class MockLocalDataSource extends Mock
     implements CryptoCurrencyLocalDataSource {}
 
-class MockFavoriteToggleService extends Mock implements FavoriteToggleService {}
+
+class MockFavoriteModelService extends Mock implements FavotireModelService {}
 
 class MockNetworkInfo extends Mock implements NetworkInfo {}
 
@@ -25,22 +27,22 @@ void main() {
   late CryptoCurrencyRepositoryImpl repository;
   late MockRemoteDataSource mockRemoteDataSource;
   late MockLocalDataSource mockLocalDataSource;
-  late MockFavoriteToggleService mockFavoriteToggleService;
+  late MockFavoriteModelService mockFavoriteModelService;
   late MockNetworkInfo mockNetworkInfo;
 
   setUp(() {
     mockRemoteDataSource = MockRemoteDataSource();
     mockLocalDataSource = MockLocalDataSource();
-    mockFavoriteToggleService = MockFavoriteToggleService();
+    mockFavoriteModelService = MockFavoriteModelService();
     mockNetworkInfo = MockNetworkInfo();
-    repository = CryptoCurrencyRepositoryImpl(mockRemoteDataSource,
-        mockLocalDataSource, mockFavoriteToggleService, mockNetworkInfo);
+    repository = CryptoCurrencyRepositoryImpl(
+        mockRemoteDataSource,
+        mockLocalDataSource,
+        mockFavoriteModelService,
+        mockNetworkInfo);
   });
 
   const String id = "bitcoin";
-
-  const CryptoCurrencyModel cryptoCurrencyModel = CryptoCurrencyModel(
-      "bitcoin", "Bitcoin", "BTC", "imageUrl", 45000, 1, 1500, 1);
 
   const List<String> ids = ["bitcoin", "ethereum"];
 
@@ -51,14 +53,11 @@ void main() {
         "ethereum", "Ethereum", "ETH", "imageUrl", 3000, 2, 100, 1)
   ];
 
-  const List<CryptoCurrency> unfavoriteCryptoCurrencyModels = [
-    CryptoCurrency(
-        "bitcoin", "Bitcoin", "BTC", "imageUrl", 45000, 1, 1500, 1.5),
-  ];
-
-  const List<CryptoCurrency> favoriteCryptoCurrencyModels = [
-    CryptoCurrency(
+  const List<CryptoCurrencyModel> favoriteCryptoCurrencyModels = [
+    CryptoCurrencyModel(
         "bitcoin", "Bitcoin", "BTC", "imageUrl", 45000, 1, 1500, 1.5, true),
+    CryptoCurrencyModel(
+        "ethereum", "Ethereum", "ETH", "imageUrl", 3000, 2, 100, 1, true)
   ];
 
   group("getTopCryptoCurrecies", () {
@@ -67,6 +66,10 @@ void main() {
         () async {
       when(() => mockRemoteDataSource.getTopCryptoCurrencies())
           .thenAnswer((_) async => cryptoCurrencyModels);
+      when(() => mockLocalDataSource.getFavoriteCryptoCurrency())
+          .thenAnswer((invocation) async => []);
+      when(() => mockFavoriteModelService.checkFavoriteModels(cryptoCurrencyModels, []))
+          .thenReturn(cryptoCurrencyModels);
 
       when(() => mockNetworkInfo.isConnected).thenAnswer((_) async => true);
 
@@ -103,9 +106,12 @@ void main() {
       when(() => mockRemoteDataSource.getCryptoCurrencyArray(ids))
           .thenAnswer((_) async => cryptoCurrencyModels);
 
+      when(() => mockFavoriteModelService.setAllFavorite(cryptoCurrencyModels))
+          .thenReturn(favoriteCryptoCurrencyModels);
+
       final result = await repository.getFavoriteCryptoCurrencies();
 
-      expect(result, const Right(cryptoCurrencyModels));
+      expect(result, const Right(favoriteCryptoCurrencyModels));
 
       verify(() => mockLocalDataSource.getFavoriteCryptoCurrency());
       verify(() => mockRemoteDataSource.getCryptoCurrencyArray(ids));
@@ -151,26 +157,16 @@ void main() {
   group("addFavoriteCryptoCurrency", () {
     test("should add new favorite crypto currency", () async {
       when(() => mockLocalDataSource.addFavoriteCurrency(id))
-          .thenAnswer((_) async => favoriteCryptoCurrencyModels);
-
-      when(() => mockFavoriteToggleService.setFavorite(
-              id, unfavoriteCryptoCurrencyModels))
-          .thenReturn(favoriteCryptoCurrencyModels);
-      when(() => mockFavoriteToggleService.setFavorite(
-              id, unfavoriteCryptoCurrencyModels))
-          .thenReturn(favoriteCryptoCurrencyModels);
+          .thenAnswer((_) async => null);
 
       var result = await repository.addFavoriteCryptoCurrency(
-          id, unfavoriteCryptoCurrencyModels);
+          id);
 
-      expect(result, Right(favoriteCryptoCurrencyModels));
+      expect(result, Right(NoReturn()));
 
       verify(() => mockLocalDataSource.addFavoriteCurrency(id));
-      verify(() => mockFavoriteToggleService.setFavorite(
-          id, unfavoriteCryptoCurrencyModels));
 
       verifyNoMoreInteractions(mockLocalDataSource);
-      verifyNoMoreInteractions(mockFavoriteToggleService);
     });
 
     test("sould return local storege failure on adding to favorite", () async {
@@ -178,7 +174,7 @@ void main() {
           .thenThrow(StorageException());
 
       var result = await repository.addFavoriteCryptoCurrency(
-          id, favoriteCryptoCurrencyModels);
+          id);
 
       expect(result, equals(Left(StorageFailure())));
 
@@ -193,21 +189,14 @@ void main() {
       when(() => mockLocalDataSource.removeFavoriteCurrency(id))
           .thenAnswer((_) async => null);
 
-      when(() => mockFavoriteToggleService.unsetFavorite(
-              id, favoriteCryptoCurrencyModels))
-          .thenReturn(unfavoriteCryptoCurrencyModels);
-
       var result = await repository.removeFavoriteCryptoCurrency(
-          id, favoriteCryptoCurrencyModels);
+          id);
 
-      expect(result, Right(unfavoriteCryptoCurrencyModels));
+      expect(result, Right(NoReturn()));
 
       verify(() => mockLocalDataSource.removeFavoriteCurrency(id));
-      verify(() => mockFavoriteToggleService.unsetFavorite(
-          id, favoriteCryptoCurrencyModels));
 
       verifyNoMoreInteractions(mockLocalDataSource);
-      verifyNoMoreInteractions(mockFavoriteToggleService);
     });
 
     test("sould return local storege failure on removing from favorite",
@@ -216,7 +205,7 @@ void main() {
           .thenThrow(StorageException());
 
       var result = await repository.removeFavoriteCryptoCurrency(
-          id, favoriteCryptoCurrencyModels);
+          id);
 
       expect(result, equals(Left(StorageFailure())));
 

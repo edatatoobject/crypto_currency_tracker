@@ -1,7 +1,7 @@
 import 'package:crypto_currency_tracker/src/app/data/datasources/crypto_currency_local_data_source.dart';
 import 'package:crypto_currency_tracker/src/app/data/datasources/crypto_currency_remote_data_source.dart';
 import 'package:crypto_currency_tracker/src/app/data/repositories/crypto_currency_repository_impl.dart';
-import 'package:crypto_currency_tracker/src/app/data/services/favorite_toggle_service.dart';
+import 'package:crypto_currency_tracker/src/app/data/services/favorite_model_service.dart';
 import 'package:crypto_currency_tracker/src/app/domain/repositories/cyrpto_currency_repository.dart';
 import 'package:crypto_currency_tracker/src/app/domain/usecases/add_favorite_crypto_currency.dart';
 import 'package:crypto_currency_tracker/src/app/domain/usecases/get_favorite_crypto_currencies.dart';
@@ -40,11 +40,11 @@ Future<void> init() async {
       () => CryptoCurrencyLocalDataSourceImpl(sl()));
   sl.registerLazySingleton<CryptoCurrencyRemoteDataSource>(
       () => CryptoCurrencyRemoteDataSourceImpl(sl()));
-
-  //! Features - Number Trivia
+  
+  //services
+  sl.registerLazySingleton(() => FavotireModelService());
 
   //! Core
-  sl.registerLazySingleton(() => FavoriteToggleService());
   sl.registerLazySingleton<NetworkInfo>(() => NetworkInfoImpl(sl()));
 
   //! External
