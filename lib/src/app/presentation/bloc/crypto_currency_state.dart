@@ -22,6 +22,8 @@ class FavoriteLoadedState extends CryptoCurrencyState {
   FavoriteLoadedState(this.cryptoCurrency) : super([cryptoCurrency]);
 }
 
+class EmptyFavoriteState extends CryptoCurrencyState {}
+
 class ErrorState extends CryptoCurrencyState {
   final String message;
   final CryptoCurrencyState previusState;

@@ -19,8 +19,10 @@ class TopCryptoCurrencyList extends StatelessWidget {
           itemBuilder: (context, index) =>
               CryptoCurrencyListItem(state.cryptoCurrency[index]),
         );
-      } else {
+      } else if (state is ErrorState) {
         return ErrorPlaceholder();
+      } else {
+        return Center();
       }
     });
   }

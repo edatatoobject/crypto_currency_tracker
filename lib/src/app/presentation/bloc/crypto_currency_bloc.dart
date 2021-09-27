@@ -67,6 +67,8 @@ class CryptoCurrencyBloc
 
   Stream<CryptoCurrencyState> _getTopEvent(
       GetTopCryptoCurrenciesEvent event) async* {
+    yield LoadingState();
+
     var getTopResult = await getTopCryptoCurrencies(NoParams());
 
     yield getTopResult.fold((failure) => state, (cryptoCurrencies) {
@@ -76,11 +78,16 @@ class CryptoCurrencyBloc
 
   Stream<CryptoCurrencyState> _getFavoriteEvent(
       GetFavoriteCryptoCurrenciesEvent event) async* {
+    yield LoadingState();
     var getFavoriteResult = await getFavoriteCryptoCurrency(NoParams());
 
     yield* getFavoriteResult.fold((failure) => _onFailure(failure),
         (cryptoCurrencies) async* {
-      yield FavoriteLoadedState(cryptoCurrencies);
+      if (cryptoCurrencies.isEmpty) {
+        yield EmptyFavoriteState();
+      } else {
+        yield FavoriteLoadedState(cryptoCurrencies);
+      }
     });
   }
 

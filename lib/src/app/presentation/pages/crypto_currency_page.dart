@@ -4,40 +4,58 @@ import 'package:crypto_currency_tracker/src/app/presentation/widgets/top_crypto_
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
-import '../../../../injection_container.dart';
+class CryptoCurrencyPage extends StatefulWidget {
+  @override
+  _CryptoCurrencyPageState createState() => _CryptoCurrencyPageState();
+}
 
-class CryptoCurrencyPage extends StatelessWidget {
+class _CryptoCurrencyPageState extends State<CryptoCurrencyPage>
+    with SingleTickerProviderStateMixin {
+  late TabController _tabController;
+
+  @override
+  void initState() {
+    super.initState();
+    _tabController = TabController(vsync: this, length: 2);
+
+    _tabController.addListener(_handleTabSelection);
+    _handleTabSelection();
+  }
+
+  void _handleTabSelection() {
+    if (_tabController.index == 0) {
+      BlocProvider.of<CryptoCurrencyBloc>(context)
+          .add(GetTopCryptoCurrenciesEvent());
+    } else {
+      BlocProvider.of<CryptoCurrencyBloc>(context)
+          .add(GetFavoriteCryptoCurrenciesEvent());
+    }
+
+    print("tabbes");
+  }
+
   @override
   Widget build(BuildContext context) {
     BlocProvider.of<CryptoCurrencyBloc>(context).stream.listen(print);
 
-    return DefaultTabController(
-        length: 2,
-        child: Scaffold(
-          appBar: AppBar(
-            title: Text("Crypto Currency Tracker"),
-            bottom: TabBar(
-              onTap: (tabIndex) {
-                if (tabIndex == 0) {
-                  BlocProvider.of<CryptoCurrencyBloc>(context)
-                      .add(GetTopCryptoCurrenciesEvent());
-                } else {
-                  BlocProvider.of<CryptoCurrencyBloc>(context)
-                      .add(GetFavoriteCryptoCurrenciesEvent());
-                }
-              },
-              tabs: [
-                Tab(text: "Top"),
-                Tab(text: "Favorite"),
-              ],
-            ),
-          ),
-          body: TabBarView(
-            children: [
-              TopCryptoCurrencyList(),
-              FavoriteCryptoCurrencyList(),
-            ],
-          ),
-        ));
+    return Scaffold(
+      appBar: AppBar(
+        title: Text("Crypto Currency Tracker"),
+        bottom: TabBar(
+          controller: _tabController,
+          tabs: [
+            Tab(text: "Top"),
+            Tab(text: "Favorite"),
+          ],
+        ),
+      ),
+      body: TabBarView(
+        controller: _tabController,
+        children: [
+          TopCryptoCurrencyList(),
+          FavoriteCryptoCurrencyList(),
+        ],
+      ),
+    );
   }
 }

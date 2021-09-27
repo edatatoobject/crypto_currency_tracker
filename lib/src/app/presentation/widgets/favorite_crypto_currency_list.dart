@@ -1,11 +1,12 @@
 import 'package:crypto_currency_tracker/src/app/presentation/bloc/crypto_currency_bloc.dart';
 import 'package:crypto_currency_tracker/src/app/presentation/widgets/crypto_currency_list_item.dart';
+import 'package:crypto_currency_tracker/src/app/presentation/widgets/empty_favorite_crypto_currency.dart';
 import 'package:crypto_currency_tracker/src/app/presentation/widgets/ui_elements/error_placeholder.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 class FavoriteCryptoCurrencyList extends StatelessWidget {
-  const FavoriteCryptoCurrencyList({ Key? key }) : super(key: key);
+  const FavoriteCryptoCurrencyList({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -13,14 +14,18 @@ class FavoriteCryptoCurrencyList extends StatelessWidget {
         builder: (context, state) {
       if (state is LoadingState) {
         return Center(child: CircularProgressIndicator());
+      } else if (state is EmptyFavoriteState) {
+        return EmptyFavoriteCryptoCurrency();
       } else if (state is FavoriteLoadedState) {
         return ListView.builder(
           itemCount: state.cryptoCurrency.length,
           itemBuilder: (context, index) =>
               CryptoCurrencyListItem(state.cryptoCurrency[index]),
         );
-      } else {
+      } else if (state is ErrorState) {
         return ErrorPlaceholder();
+      } else {
+        return Center();
       }
     });
   }

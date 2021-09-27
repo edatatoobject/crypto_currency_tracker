@@ -37,6 +37,10 @@ class CryptoCurrencyRepositoryImpl implements CryptoCurrencyRepository {
       return Left(StorageFailure());
     }
 
+    if (favoriteIds.isEmpty) {
+      return Right([]);
+    }
+
     try {
       return Right(await remoteDataSource.getCryptoCurrencyArray(favoriteIds));
     } on ServerException {
